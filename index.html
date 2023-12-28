@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>测试uniapp的webview和APP之间的通信234</title>
+    <title>测试uniapp的webview和APP之间的通信2341111</title>
     <link rel="stylesheet" type="text/css" href="css/index.css" />
   </head>
   <body>
     <div id="app">
-      <div class="title">这个是hybrid下的html页面哦！12312312</div>
+      <div class="title">这个是hybrid下的html页面哦！123123128908098</div>
       <div class="demo-div">
         <div class="demo-lable" v-for="(item,index) in dataList" :key="index">
           <img :src="item.smallimage" />
@@ -23,23 +23,51 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script type="text/javascript" src="js/textData.js"></script>
   <script type="text/javascript">
-    // 在引用依赖的文件后，需要在 HTML 中监听 UniAppJSBridgeReady 事件触发后，才能安全调用 uni 的 API。
-    document.addEventListener('UniAppJSBridgeReady', function () {
-      uni.getEnv(function (res) {
-        console.log(29, '获取当前环境：' + JSON.stringify(res))
+    window.onload = () => {
+      // alert(location.href)
+      let arr = location.href.split('?')
+      let params = arr[1].split('&')
+      let queryObj = {}
+      for (let i = 0; i < params.length; i++) {
+        let param = params[i].split('=')
+        queryObj[param[0]] = param[1]
+      }
+      // alert(JSON.stringify(queryObj))
+      alert(queryObj.type)
+      // 在引用依赖的文件后，需要在 HTML 中监听 UniAppJSBridgeReady 事件触发后，才能安全调用 uni 的 API。
+      document.addEventListener('UniAppJSBridgeReady', function () {
+        uni.getEnv(function (res) {
+          console.log(29, '获取当前环境：' + JSON.stringify(res))
+        })
+        if (!queryObj.type) {
+          // 向APP发送消息 （注意看这里 01）
+          uni.postMessage({
+            data: {
+              name: 'polly',
+              age: '18'
+            }
+          })
+          //  const optionsQs = localStorage.getItem('optionsQs', optionsQs)
+          uni.redirectTo({
+            url: `/pages/terminal/bind-result?${123}`
+          })
+        }
       })
-    })
+    }
+
+    // 在引用依赖的文件后，需要在 HTML 中监听 UniAppJSBridgeReady 事件触发后，才能安全调用 uni 的 API。
+    //  document.addEventListener('UniAppJSBridgeReady', function () {})
 
     // HTML 接受APP发送过来的消息 (H5端)
-    window.addEventListener(
-      'message',
-      (e) => {
-        console.log(37, e)
-        app.dataList = JSON.parse(e.data.data).navigation
-        console.log(app.dataList, '+++++++++')
-      },
-      false
-    )
+    //  window.addEventListener(
+    //    'message',
+    //    (e) => {
+    //      console.log(37, e)
+    //      app.dataList = JSON.parse(e.data.data).navigation
+    //      console.log(app.dataList, '+++++++++')
+    //    },
+    //    false
+    //  )
     window.objtoquery = (obj) => {
       return Object.entries(obj)
         .map(([key, val]) => `${key}=${val}`)
@@ -64,6 +92,7 @@
         sign: obj.sign,
         redirectType: '1'
       }
+      alert(JSON.stringify(params))
       // alert(location.origin)
 
       const optionsQs = objtoquery({
@@ -75,44 +104,19 @@
         operateType: obj.operateType,
         from: 'kyc'
       })
-      // alert(optionsQs)
-      app.optionsQs = optionsQs
-      console.log(84, 'params-->', JSON.stringify(params))
-      console.log(84, 'optionsQs-->', JSON.stringify(optionsQs))
+      alert(optionsQs)
+      // localStorage.setItem('optionsQs', optionsQs)
 
-      params.url = encodeURIComponent(`https://guolys.github.io/testDemo?${optionsQs}`)
-
+      params.url = encodeURIComponent(`https://5wt0d8zq-5500.asse.devtunnels.ms?${optionsQs}`)
+      // params.url = encodeURIComponent(`http://transaction.daoner.xin:9094/testgy?${optionsQs}`)
       const url = `https://kyc.qcloud.com/api/web/willLogin?${objtoquery(params)}`
 
-      // alert(url)
+      alert('url')
+      alert(url)
 
-      location.href = url
+      window.location.href = url
     }
-    window.onload = () => {
-      alert(location.href)
-      let arr = location.href.split('?')
-      let params = arr[1].split('&')
-      let obj = {}
-      for (let i = 0; i < params.length; i++) {
-        let param = params[i].split('=')
-        obj[param[0]] = param[1]
-      }
-      alert(JSON.stringify(obj))
-      if (!obj.type) {
-        document.addEventListener('UniAppJSBridgeReady', function () {
-          // 向APP发送消息 （注意看这里 01）
-          uni.postMessage({
-            data: {
-              name: 'polly',
-              age: '18'
-            }
-          })
-          uni.navigateTo({
-            url: `/pages/terminal/bind-result?${app.optionsQs}`
-          })
-        })
-      }
-    }
+
     // HTML 接受APP发送过来的消息 (APP端)
     //  function requestData(data) {
     //    console.log(53, 'requestData-->')
